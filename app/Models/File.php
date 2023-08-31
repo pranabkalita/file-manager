@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Support\Str;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Traits\HasCreatorAndUpdator;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,6 +29,16 @@ class File extends Model
         });
     }
 
+    // Attributes
+    public function owner(): Attribute
+    {
+        return Attribute::make(
+            get: function (mixed $value, array $attributes) {
+                return $attributes['created_by'] = auth()->id() ? 'me' : $this->user->id;
+            }
+        );
+    }
+
     // Methods
     public function isOwnedBy($userId): bool
     {
@@ -48,5 +59,10 @@ class File extends Model
     public function parent(): BelongsTo
     {
         return $this->belongsTo(User::class, 'parent_id');
+    }
+
+    public function updatedBy(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by');
     }
 }
