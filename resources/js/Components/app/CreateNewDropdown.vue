@@ -35,13 +35,9 @@
           </div>
 
           <div class="px-1 py-1">
-            <MenuItem v-slot="{ active }">
-                <a href="" class="text-gray-700 block px-4 py-2 text-sm">Upload Folder</a>
-            </MenuItem>
+            <FileUploadMenuItem />
 
-            <MenuItem v-slot="{ active }">
-                <a href="" class="text-gray-700 block px-4 py-2 text-sm">Upload Files</a>
-            </MenuItem>
+            <FolderUploadMenuItem />
           </div>
         </MenuItems>
       </transition>
@@ -57,6 +53,8 @@ import { Menu, MenuButton, MenuItems, MenuItem } from '@headlessui/vue'
 import { ChevronDownIcon } from '@heroicons/vue/20/solid'
 
 import CreateFolderModal from '@/Components/app/CreateFolderModal.vue'
+import FileUploadMenuItem from './FileUploadMenuItem.vue'
+import FolderUploadMenuItem from './FolderUploadMenuItem.vue'
 
 // Refs
 let createFolderModal = ref(false)

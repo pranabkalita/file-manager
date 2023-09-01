@@ -25,22 +25,22 @@
         >
           <div class="px-1 py-1">
             <MenuItem v-slot="{ active }">
-                <ResponsiveNavLink
-                    :href="route('profile.edit')"
-                    :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                >
-                    Profile
-                </ResponsiveNavLink>
+              <ResponsiveNavLink
+                  :href="route('profile.edit')"
+                  :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+              >
+                Profile
+              </ResponsiveNavLink>
             </MenuItem>
             <MenuItem v-slot="{ active }">
-                <ResponsiveNavLink
-                    :href="route('logout')"
-                    method="post"
-                    as="button"
-                    :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
-                >
-                    Logout
-                </ResponsiveNavLink>
+              <ResponsiveNavLink
+                  :href="route('logout')"
+                  method="post"
+                  as="button"
+                  :class="[active ? 'bg-gray-100 text-gray-900' : 'text-gray-700', 'block px-4 py-2 text-sm']"
+              >
+                Logout
+              </ResponsiveNavLink>
             </MenuItem>
           </div>
         </MenuItems>

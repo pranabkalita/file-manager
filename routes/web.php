@@ -20,6 +20,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->where('folder', '(.*)')->name('myFiles');
 
     Route::post('/folder/create', [FileController::class, 'createFolder'])->name('folder.create');
+    Route::post('/file', [FileController::class, 'store'])->name('file.store');
 });
 
 Route::get('/dashboard', function () {

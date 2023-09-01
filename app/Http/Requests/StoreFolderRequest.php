@@ -23,7 +23,6 @@ class StoreFolderRequest extends ParentIdBaseRequest
                     ->when($this->parent, function ($query) {
                         return $query->where('parent_id', $this->parent->id);
                     })
-                    ->whereNull('deleted_at')
             ]
         ]);
     }

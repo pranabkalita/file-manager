@@ -6,7 +6,7 @@ import {HomeIcon} from '@heroicons/vue/20/solid'
 const { files, foldeer, ancestors } = defineProps({
     files: Object,
     folder: Object,
-    ancestors: Array
+    ancestors: Object
 })
 
 const openFolder = (file) => {
@@ -77,7 +77,7 @@ const openFolder = (file) => {
                         {{ file.name }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                        {{ file.name }}
+                        {{ file.owner }}
                     </td>
                     <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                         {{ file.updated_at }}
