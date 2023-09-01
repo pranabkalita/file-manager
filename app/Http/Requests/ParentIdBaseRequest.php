@@ -3,7 +3,7 @@
 namespace App\Http\Requests;
 
 use App\Models\File;
-use Illuminate\Contracts\Database\Eloquent\Builder;
+use Illuminate\Database\Query\Builder;
 use Illuminate\Validation\Rule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -18,7 +18,7 @@ class ParentIdBaseRequest extends FormRequest
     {
         $this->parent = File::query()->where('id', $this->input('parent_id'))->first();
 
-        if ($this->parent && !$this->parent->isOwedBy(auth()->id())) {
+        if ($this->parent && !$this->parent->isOwnedBy(auth()->id())) {
             return false;
         }
 

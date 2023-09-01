@@ -38,7 +38,7 @@
 <script setup>
 // Imports
 import { ref, nextTick } from 'vue'
-import { useForm } from '@inertiajs/vue3';
+import { useForm, usePage } from '@inertiajs/vue3';
 
 import Modal from '@/Components/Modal.vue'
 import InputLabel from '@/Components/InputLabel.vue';
@@ -49,8 +49,10 @@ import PrimaryButton from '@/Components/PrimaryButton.vue';
 
 // Uses
 const form = useForm({
-    name: ''
+    name: '',
+    parent_id: null
 })
+const page = usePage()
 
 // Refs
 let folderNameInput = ref(null)
@@ -70,6 +72,8 @@ const onShow = () => {
 }
 
 const createFolder = () => {
+    form.parent_id = page.props.folder.id
+    
     form.post(route('folder.create'), {
         preserveScroll: true,
         onSuccess: () => {
