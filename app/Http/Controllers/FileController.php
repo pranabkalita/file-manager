@@ -13,6 +13,7 @@ class FileController extends Controller
 {
     public function myFiles(Request $request, string $folder = null)
     {
+        phpinfo();
         if ($folder) {
             $folder = File::query()->where('created_by', auth()->id())->where('path', $folder)->firstOrFail();
         }
