@@ -11,7 +11,7 @@ use Inertia\Inertia;
 
 class FileController extends Controller
 {
-    public function myFiles(string $folder = null)
+    public function myFiles(Request $request, string $folder = null)
     {
         if ($folder) {
             $folder = File::query()->where('created_by', auth()->id())->where('path', $folder)->firstOrFail();
@@ -33,6 +33,10 @@ class FileController extends Controller
         $ancestors = FileResource::collection([...$folder->ancestors, $folder]);
 
         $folder = new FileResource($folder);
+
+        if ($request->wantsJson()) {
+            return $files;
+        }
 
         return Inertia::render('MyFiles', compact('files', 'folder', 'ancestors', 'folder'));
     }

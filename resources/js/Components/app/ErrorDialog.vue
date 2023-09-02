@@ -36,7 +36,7 @@ const close = () => {
 // Hooks
 onMounted(() => {
     emitter.on(SHOW_ERROR_DIALOG, ({ message: msg }) => {
-        show.value = true
+        show.value = msg ? true : false
         message.value = msg
     })
 })

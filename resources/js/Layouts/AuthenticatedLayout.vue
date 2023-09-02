@@ -78,7 +78,7 @@ const uploadFile = files => {
             } else {
                 message = 'Error during file upload. Please try again later.' 
             }
-
+    
             showErrorDialog(message)
         },
         onFinish: () => {
