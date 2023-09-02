@@ -26,19 +26,21 @@
         </main>
     </div>
 
+    <ErrorDialog />
     <FormProgress :form="filesUploadForm" />
 </template>
 
 <script setup>
 // Imports
 import { onMounted, ref } from 'vue';
-import { emitter, FILE_UPLOAD_STARTED } from '@/event-bus';
+import { emitter, FILE_UPLOAD_STARTED, showErrorDialog } from '@/event-bus';
 import { useForm, usePage } from '@inertiajs/vue3';
 
 import Navigation from '@/Components/app/Navigation.vue';
 import SearchForm from '@/Components/app/SearchForm.vue';
 import UserSettingsDropdown from '@/Components/app/UserSettingsDropdown.vue';
 import FormProgress from '@/Components/app/FormProgress.vue';
+import ErrorDialog from '@/Components/app/ErrorDialog.vue';
 
 // Uses
 const filesUploadForm = useForm({
@@ -58,11 +60,32 @@ const dragOver = ref(false)
 
 // Methods
 const uploadFile = files => {
+    if (files instanceof FileList == false) {
+        return
+    }
+
     filesUploadForm.parent_id = page.props.folder.id
     filesUploadForm.files = files
     filesUploadForm.relative_paths = [...files].map(f => f.webkitRelativePath)
 
-    filesUploadForm.post(route('file.store'))
+    filesUploadForm.post(route('file.store'), {
+        onSuccess: () => { },
+        onError: errors => {
+            let message = '';
+
+            if (Object.keys(errors).length > 0) {
+                message = errors[Object.keys(errors)[0]]
+            } else {
+                message = 'Error during file upload. Please try again later.' 
+            }
+
+            showErrorDialog(message)
+        },
+        onFinish: () => {
+            filesUploadForm.clearErrors()
+            filesUploadForm.reset()
+        }
+    })
 }
 
 const onDragOver = () => dragOver.value = true
