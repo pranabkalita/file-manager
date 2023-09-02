@@ -25,6 +25,8 @@
             </template>
         </main>
     </div>
+
+    <FormProgress :form="filesUploadForm" />
 </template>
 
 <script setup>
@@ -36,6 +38,7 @@ import { useForm, usePage } from '@inertiajs/vue3';
 import Navigation from '@/Components/app/Navigation.vue';
 import SearchForm from '@/Components/app/SearchForm.vue';
 import UserSettingsDropdown from '@/Components/app/UserSettingsDropdown.vue';
+import FormProgress from '@/Components/app/FormProgress.vue';
 
 // Uses
 const filesUploadForm = useForm({

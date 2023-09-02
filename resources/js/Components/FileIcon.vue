@@ -19,7 +19,7 @@
 </template>
 
 <script setup>
-import { isImage } from '@/Helpers/file-helpers'
+import { isImage, isAudio, isVideo, isWord, isExcel, isZip, isText, isPDF } from '@/Helpers/file-helpers'
 
 const { file } = defineProps({
     file: Object
