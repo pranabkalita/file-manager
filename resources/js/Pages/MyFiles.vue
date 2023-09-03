@@ -28,6 +28,10 @@
                     </div>
                 </li>
             </ol>
+
+            <div>
+                <DeleteFilesButton :delete-all="allSeletected" :delete-ids="selectedIds" @delete="onFilesDelete" />
+            </div>
         </nav>
 
 
@@ -35,6 +39,9 @@
             <table class="min-w-full">
                 <thead class="bg-gray-100 border-b">
                     <tr>
+                        <th class="w-[30px] max-w-[30px] pr-0 text-sm font-medium text-gray-900 px-6 py-4 text-left">
+                            <Checkbox v-model:checked="allSeletected" @change="onSelectedAllSelected" />
+                        </th>
                         <th class="text-sm font-medium text-gray-900 px-6 py-4 text-left">
                             Name
                         </th>
@@ -50,11 +57,21 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr class="bg-white border-b transition duration-300 ease-in-out hover:bg-gray-100 cursor-pointer" 
+                    <tr 
+                        class="bg-white border-b transition duration-300 ease-in-out hover:bg-blue-100 cursor-pointer" 
+                        :class="(selected[file.id] || allSeletected) ? 'bg-blue-50' : 'bg-white'"
                         v-if="allFiles.data.length > 0"
                         v-for="file in allFiles.data" :key="file.id"
+                        @click="toggleFileSelected(file)"
                         @dblclick="openFolder(file)"
                     >
+                        <td class="w-[30px] max-w-[30px] pr-0 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                            <Checkbox 
+                                @change="onFileCheckedChange(file)" 
+                                :checked="selected[file.id] || allSeletected" 
+                                v-model="selected[file.id]" 
+                            />
+                        </td>
                         <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900 flex items-center">
                             <FileIcon :file="file" />
                             {{ file.name }}
@@ -91,6 +108,9 @@ import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import { Head, router, Link } from '@inertiajs/vue3'
 import {HomeIcon} from '@heroicons/vue/20/solid'
 import FileIcon from '@/Components/FileIcon.vue'
+import Checkbox from '@/Components/Checkbox.vue'
+import DeleteFilesButton from '@/Components/app/DeleteFilesButton.vue'
+import { computed } from 'vue'
 
 // Uses
 
@@ -100,6 +120,8 @@ const allFiles = ref({
     data: files.data,
     next: files.links.next
 })
+const allSeletected = ref(false)
+const selected = ref({})
 
 // Props & Emits
 const { files, foldeer, ancestors } = defineProps({
@@ -109,6 +131,7 @@ const { files, foldeer, ancestors } = defineProps({
 })
 
 // Computed
+const selectedIds = computed(() => Object.keys(selected.value))
 
 // Methods
 const openFolder = (file) => {
@@ -128,6 +151,25 @@ const loadMore = async () => {
     allFiles.value.data = [...allFiles.value.data, ...fileSet.data]
     allFiles.value.next = fileSet.links.next
 };
+
+const onSelectedAllSelected = () => {
+    allFiles.value.data.forEach(file => {
+        selected.value[file.id] = allSeletected.value
+    })
+}
+
+const toggleFileSelected = file => selected.value[file.id] = !selected.value[file.id]
+
+const onFileCheckedChange = file => {
+    if (!selected.value[file.id]) {
+        allSeletected.value = false
+    }
+}
+
+const onFilesDelete = () => {
+    allSeletected.value = false
+    selected.value = {}
+}
 
 // Hooks
 onMounted(() => {
