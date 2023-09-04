@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/folder/create', [FileController::class, 'createFolder'])->name('folder.create');
     Route::post('/file', [FileController::class, 'store'])->name('file.store');
     Route::delete('/file', [FileController::class, 'destroy'])->name('files.delete');
+    Route::get('/file/download', [FileController::class, 'download'])->name('files.download');
 });
 
 Route::get('/dashboard', function () {

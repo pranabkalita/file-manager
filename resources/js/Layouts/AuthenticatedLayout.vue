@@ -28,6 +28,7 @@
 
     <ErrorDialog />
     <FormProgress :form="filesUploadForm" />
+    <Notification />
 </template>
 
 <script setup>
@@ -41,6 +42,7 @@ import SearchForm from '@/Components/app/SearchForm.vue';
 import UserSettingsDropdown from '@/Components/app/UserSettingsDropdown.vue';
 import FormProgress from '@/Components/app/FormProgress.vue';
 import ErrorDialog from '@/Components/app/ErrorDialog.vue';
+import Notification from '@/Components/app/Notification.vue';
 
 // Uses
 const filesUploadForm = useForm({

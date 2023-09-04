@@ -12,7 +12,7 @@
 
                     <div v-else class="flex items-center">
                         <svg aria-hidden="true" class="w-6 h-6 text-gray-400" fill="currentColor" viewBox="0 0 20 20"
-                             xmlns="http://www.w3.org/2000/svg">
+                            xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd"
                                 d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z"
                                 clip-rule="evenodd">
@@ -30,6 +30,7 @@
             </ol>
 
             <div>
+                <DownloadFilesButton :all="allSeletected" :ids="selectedIds" class="mr-2" />
                 <DeleteFilesButton :delete-all="allSeletected" :delete-ids="selectedIds" @delete="onFilesDelete" />
             </div>
         </nav>
@@ -101,16 +102,16 @@
 
 <script setup>
 // Imports
-import { onMounted, ref } from 'vue'
-import { httpGet } from '@/Helpers/http-helpers'
-
-import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
+import { onMounted, ref, computed } from 'vue'
 import { Head, router, Link } from '@inertiajs/vue3'
 import {HomeIcon} from '@heroicons/vue/20/solid'
+
+import { httpGet } from '@/Helpers/http-helpers'
+import AuthenticatedLayout from '@/Layouts/AuthenticatedLayout.vue'
 import FileIcon from '@/Components/FileIcon.vue'
 import Checkbox from '@/Components/Checkbox.vue'
 import DeleteFilesButton from '@/Components/app/DeleteFilesButton.vue'
-import { computed } from 'vue'
+import DownloadFilesButton from '@/Components/app/DownloadFilesButton.vue'
 
 // Uses
 
@@ -131,7 +132,7 @@ const { files, foldeer, ancestors } = defineProps({
 })
 
 // Computed
-const selectedIds = computed(() => Object.keys(selected.value))
+const selectedIds = computed(() => Object.keys(selected.value).filter(key => selected.value[key]));
 
 // Methods
 const openFolder = (file) => {
@@ -163,6 +164,17 @@ const toggleFileSelected = file => selected.value[file.id] = !selected.value[fil
 const onFileCheckedChange = file => {
     if (!selected.value[file.id]) {
         allSeletected.value = false
+    } {
+        let checked = true;
+
+        for (let file of allFiles.value.data) {
+            if (!selected.value[file.id]) {
+                checked = false;
+                break;
+            }
+        }
+
+        allSeletected.value = checked
     }
 }
 

@@ -19,7 +19,7 @@ import { defineProps, defineEmits, ref } from 'vue';
 import { useForm, usePage } from '@inertiajs/vue3';
 
 import ConfirmationDialog from './ConfirmationDialog.vue';
-import { showErrorDialog } from '@/event-bus';
+import { showErrorDialog, showSuccessNotification } from '@/event-bus';
 
 // Uses
 const page = usePage()
@@ -70,6 +70,8 @@ const onDeleteConfirm = () => {
             showDeleteDialog.value = false
             emit('delete')
             // TODO: Show succecss notification
+
+            showSuccessNotification('Selected files have been deleted.')
         }
     })
 }
