@@ -22,7 +22,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::post('/folder/create', [FileController::class, 'createFolder'])->name('folder.create');
     Route::post('/file', [FileController::class, 'store'])->name('file.store');
     Route::delete('/file', [FileController::class, 'destroy'])->name('files.delete');
+    Route::delete('/file/delete-forever', [FileController::class, 'deleteForever'])->name('files.deleteForever');
     Route::get('/file/download', [FileController::class, 'download'])->name('files.download');
+    Route::get('/trash', [FileController::class, 'trash'])->name('trash');
+    Route::post('/restore', [FileController::class, 'restore'])->name('restore');
 });
 
 Route::get('/dashboard', function () {

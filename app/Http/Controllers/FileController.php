@@ -10,6 +10,7 @@ use App\Http\Resources\FileResource;
 use App\Http\Requests\StoreFileRequest;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\FilesActionRequest;
+use App\Http\Requests\RestoreTrashRequest;
 use App\Http\Requests\StoreFolderRequest;
 use ZipArchive;
 
@@ -89,12 +90,12 @@ class FileController extends Controller
             $children = $parent->children;
 
             foreach ($children as $child) {
-                $child->delete();
+                $child->moveToTrash();
             }
         } else {
             foreach ($data['ids'] as $id) {
                 $file = File::find($id);
-                $file->delete();
+                $file->moveToTrash();
             }
         }
 
@@ -150,7 +151,60 @@ class FileController extends Controller
         ];
     }
 
-    public function createZip($files): string
+    public function trash(Request $request)
+    {
+        $files = File::onlyTrashed()
+            ->where('created_by', auth()->id())
+            ->orderBy('is_folder', 'desc')
+            ->orderBy('deleted_at', 'desc')
+            ->paginate(10);
+
+        $files = FileResource::collection($files);
+
+        if ($request->wantsJson()) {
+            return $files;
+        }
+
+        return Inertia::render('Trash', compact('files'));
+    }
+
+    public function restore(RestoreTrashRequest $request)
+    {
+        $data = $request->validated();
+
+        if ($data['all']) {
+            $children = File::onlyTrashed()->get();
+            foreach ($children as $child) {
+                $child->restore();
+            }
+        } else {
+            $ids = $data['ids'] ?? [];
+            $children = File::onlyTrashed()->whereIn('id', $ids)->get();
+            foreach ($children as $child) {
+                $child->restore();
+            }
+        }
+    }
+
+    public function deleteForever(RestoreTrashRequest $request)
+    {
+        $data = $request->validated();
+
+        if ($data['all']) {
+            $children = File::onlyTrashed()->get();
+            foreach ($children as $child) {
+                $child->deleteForever();
+            }
+        } else {
+            $ids = $data['ids'] ?? [];
+            $children = File::onlyTrashed()->whereIn('id', $ids)->get();
+            foreach ($children as $child) {
+                $child->deleteFoever();
+            }
+        }
+    }
+
+    private function createZip($files): string
     {
         $zipPath = 'zip/' . Str::random() . '.zip';
         $publicPath = "public/$zipPath";
@@ -171,7 +225,6 @@ class FileController extends Controller
 
         return asset(Storage::url($zipPath));
     }
-
 
     private function addFilesToZip(ZipArchive $zip, $files, $ancestors = '')
     {

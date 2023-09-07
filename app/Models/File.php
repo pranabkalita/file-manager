@@ -2,15 +2,16 @@
 
 namespace App\Models;
 
+use Carbon\Carbon;
 use Illuminate\Support\Str;
 use Kalnoy\Nestedset\NodeTrait;
 use App\Traits\HasCreatorAndUpdator;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
-use Illuminate\Support\Facades\Storage;
 
 class File extends Model
 {
@@ -65,6 +66,30 @@ class File extends Model
         $power = $this->size > 0 ? floor(log($this->size, 1024)) : 0;
 
         return number_format($this->size / pow(1024, $power), 2, '.', ',') . ' ' . $units[$power];
+    }
+
+    public function moveToTrash()
+    {
+        $this->deleted_at = Carbon::now();
+
+        return $this->save();
+    }
+
+    public function deleteForever()
+    {
+        $this->deleteFilesFromStorage([$this]);
+        $this->forceDelete();
+    }
+
+    private function deleteFilesFromStorage($files)
+    {
+        foreach ($files as $file) {
+            if ($file->is_folder) {
+                $this->deleteFilesFromStorage(($file->children));
+            } else {
+                Storage::delete($file->storage_path);
+            }
+        }
     }
 
     // Relations
